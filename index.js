@@ -1,7 +1,7 @@
 // Import dependencies
 
 // Inquirer for user input
-const inquirer = require('insquirer');
+const inquirer = require('inquirer');
 // Establishes a connection to the db
 const connection = require('./db/connection');
 // Console.table for tabluar data
