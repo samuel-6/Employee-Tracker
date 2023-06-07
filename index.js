@@ -42,7 +42,7 @@ const mainMenu = () => {
     })
 
     // Do something with the answer, in this case a switch statement which will execute a function based on the user answer
-    inquirer.then((answer) => {
+    .then((answer) => {
 
         switch(answer.start) {
 
@@ -163,8 +163,7 @@ function viewEmployeesByDepartment() {
         ],
 
     })
-
-    inquirer.then((answer) => {
+    .then((answer) => {
 
         switch(answer.department) {
 
@@ -299,8 +298,8 @@ function addEmployee() {
 
                 name: 'role',
                 type: 'list',
-                message: 'Please type the new employees id',
-                choices: 'roles',
+                message: 'Please type the new employee\'s role',
+                choices: roles,
 
             },
         
@@ -369,7 +368,7 @@ function addEmployee() {
             (err, data) => {
 
                 if(err) throw err;
-                console.log(`Added ${userInput.first_name} ${userInput.last_name} to the db`);
+                console.log(`\n Added ${userInput.first_name} ${userInput.last_name} successfully to the db \n`);
                 viewAllEmployees();
 
             }
@@ -424,7 +423,7 @@ function removeEmployee() {
                 (err, data) => {
 
                     if(err) throw err;
-                    console.log(`${answer.employee} removed from the db`);
+                    console.log(`\n ${answer.employee} was removed successfully from the db \n`);
                     viewAllEmployees();
 
                 }
@@ -657,7 +656,7 @@ function addRole() {
         ])
         .then((data) => {
 
-            const [title, salary, department_name] = data;
+            let {title, salary, department_name} = data;
 
             connection.query(
 

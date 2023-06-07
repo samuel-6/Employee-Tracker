@@ -6,14 +6,18 @@ const db = mysql.createConnection(
 
     {
 
-        host: 'localhost',
+        host: '127.0.0.1',
         user: 'root',
         password: '',
         database: 'employee_db'
 
-    },
-    console.log('Connected successfully')
+    }
 
 );
+
+db.connect((err) => {
+    if (err) throw err;
+    console.log('connected to database');
+});
 
 module.exports = db;
