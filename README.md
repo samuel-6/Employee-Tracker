@@ -33,7 +33,7 @@ To use the Employee Tracker:
 3. You will be presented with a list of options. Choose an option by using the arrow keys and hitting enter.
 4. Follow the prompts as they appear.
 
-*To be added: screenshot of the application in action.*
+https://drive.google.com/file/d/1YYRxKe9pEyOf9yrHo7fKIM013eXZVMa9/view?usp=sharing
 
 ## Credits
 
