@@ -1,4 +1,4 @@
-// Sets up dependencies for Node.js
+// Import dependencies
 
 // Inquirer for user input
 const inquirer = require('insquirer');
@@ -7,9 +7,13 @@ const connection = require('./db/connection');
 // Console.table for tabluar data
 require('console.table');
 
+// Main app
 const mainMenu = () => {
 
+    // Welcome message
     console.log('Welcome to Employee Manager');
+
+    // Asks the user for input
     inquirer.prompt({
 
         name: 'start',
@@ -37,6 +41,7 @@ const mainMenu = () => {
 
     })
 
+    // Do something with the answer, in this case a switch statement which will execute a function based on the user answer
     inquirer.then((answer) => {
 
         switch(answer.start) {
@@ -106,3 +111,35 @@ const mainMenu = () => {
     });
 
 };
+
+// View All Employees
+function viewAllEmployees() {
+
+    const query = `SELECT
+    employee.id,
+    employee.first_name,
+    employee.last_name,
+    role.title,
+    department.name AS
+    department,
+    role.salary,
+    CONCAT(manager.first_name, ' ', manager.last_name) AS
+    manager FROM
+    employee
+    LEFT JOIN role ON
+    employee.role_id = role.id
+    LEFT JOIN department ON
+    role.department_id = department.id
+    LEFT JOIN employee manager ON
+    manager.id = employee.manager_id;`;
+
+    // Logs table in the terminal using console.table
+    connection.query(query, (err, data) => {
+
+        if(err) throw err;
+        console.table(data);
+        mainMenu();
+
+    });
+    
+}
