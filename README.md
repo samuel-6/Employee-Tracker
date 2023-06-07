@@ -37,7 +37,7 @@ To use the Employee Tracker:
 
 ## Credits
 
-This project was developed by [Your GitHub Username](https://github.com/samuel-6). 
+This project was developed by [Samuel Munguia](https://github.com/samuel-6). 
 
 ## License
 
