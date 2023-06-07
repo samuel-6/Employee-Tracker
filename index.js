@@ -211,3 +211,171 @@ function viewEmployeesByDepartment() {
     }
 
 }
+
+// View Employees By Manager
+function viewEmployeesByManager() {
+
+    const query = `SELECT 
+    employee.id, 
+    employee.first_name, 
+    employee.last_name, 
+    role.title, 
+    department.name AS 
+    department, 
+    CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+    FROM employee 
+    LEFT JOIN role ON employee.role_id = role.id 
+    LEFT JOIN department ON role.department_id = department.id 
+    LEFT JOIN employee manager ON manager.id = employee.manager_id 
+    ORDER BY manager;`;
+
+    connection.query(query, (err, data) => {
+
+        if(err) throw err;
+        console.table(data);
+        mainMenu();
+
+    });
+
+}
+
+// Add Employee
+function addEmployee() {
+
+    let userInput;
+
+    const query = `SELECT id, title FROM role WHERE title NOT LIKE '%Manager%';`;
+
+    Promise.resolve().then(() => {
+
+        return new Promise((resolve, reject) => {
+
+            connection.query(query, (err, data) => {
+
+                if(err) reject(err);
+                else resolve(data);
+
+            });
+
+        });
+
+    })
+    .then(() => {
+
+        return new Promise((resolve, reject) => {
+
+            connection.query(query, (err, data) => {
+
+                if(err) reject(err);
+                else resolve(data);
+
+            });
+
+        });
+
+    })
+    .then((rolesData) => {
+
+        const roles = rolesData.map((item) => `Role title: ${item.title}, Role ID: ${item.id}`);
+
+        return inquirer.prompt([
+            
+            
+            {
+
+                name: 'first_name',
+                type: 'input',
+                message: 'Please type the new employees first name',
+
+            },
+            {
+
+                name: 'last_name',
+                type: 'input',
+                message: 'Please type the new employees last name',
+
+            },
+            {
+
+                name: 'role',
+                type: 'list',
+                message: 'Please type the new employees id',
+                choices: 'roles',
+
+            },
+        
+        ]);
+
+    })
+    .then((answer) => {
+
+        userInput = answer;
+        const query2 = `SELECT 
+        manager.id as manager_id,
+        CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
+        FROM employee
+        LEFT JOIN role ON employee.role_id = role.id
+        LEFT JOIN employee AS manager ON manager.id = employee.manager_id 
+        WHERE manager.id IS NOT NULL
+        GROUP BY manager_id;`;
+
+        return new Promise((resolve, reject) => {
+
+            connection.query(query2, (err, data) => {
+
+                if(err) reject(err);
+                else resolve(data);
+
+            });
+
+        });
+
+    })
+    .then((managersData) => {
+
+        const managers = managersData.map((item) => `${item.manager_name} ID:${item.manager_id}`);
+
+        return inquirer.prompt([
+
+            {
+
+                name: 'manager',
+                type: 'list',
+                message: 'Please select new employees manager',
+                choices: [...managers,'None'],
+
+            },
+
+        ]);
+
+    })
+    .then((answer) => {
+
+        const query = `INSERT INTO employee 
+        (first_name, last_name, role_id, manager_id) 
+        VALUES (?, ?, ?, ?)`;
+
+        connection.query(
+
+            query,
+            [
+
+                userInput.first_name,
+                userInput.last_name,
+                userInput.role.split('ID:')[1],
+                answer.manager.split('ID:')[1],
+
+            ],
+            (err, data) => {
+
+                if(err) throw err;
+                console.log(`Added ${userInput.first_name} ${userInput.last_name} to the db`);
+                viewAllEmployees();
+
+            }
+
+        );
+
+    });
+
+}
